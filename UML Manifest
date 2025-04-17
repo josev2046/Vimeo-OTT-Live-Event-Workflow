@@ -1,0 +1,48 @@
+@startuml
+title Vimeo OTT Event Scenarios (Viewer vs. Producer)
+
+actor Viewer
+actor Producer
+participant VimeoOTT
+participant Encoder
+participant Player
+
+Producer -> VimeoOTT: Access OTT Platform (Admin)
+VimeoOTT -> VimeoOTT: Authenticate Producer
+
+Producer -> VimeoOTT: Create Event
+VimeoOTT -> VimeoOTT: Configure Event Settings
+
+alt Web Browser Encoder
+  Producer -> VimeoOTT: Initiate Encoder (Web Browser)
+  VimeoOTT -> Encoder: Provide Encoder Interface
+  Producer -> Encoder: Configure Streaming Settings
+else External Encoder (RTMP)
+  VimeoOTT -> VimeoOTT: Provide RTMP Credentials
+  Producer -> Encoder: Configure External Encoder with RTMP
+end
+
+Producer -> VimeoOTT: Schedule Event
+
+Viewer -> VimeoOTT: Access OTT Platform (User)
+VimeoOTT -> VimeoOTT: Authenticate Viewer
+Viewer -> VimeoOTT: Browse/Find Event
+
+VimeoOTT -> Player: Embed Player for Event
+VimeoOTT -> Player: Configure for Scheduled Event
+
+alt Web Browser Encoder
+  Producer -> Encoder: Start Streaming
+  Encoder -> VimeoOTT: Send Live Stream
+  VimeoOTT -> Player: Receive Live Stream
+else External Encoder (RTMP)
+  Producer -> Encoder: Start Streaming (RTMP)
+  Encoder -> VimeoOTT: Send Live Stream (RTMP)
+  VimeoOTT -> Player: Receive Live Stream (RTMP)
+end
+
+Player -> Viewer: Display Live Event
+
+
+
+@enduml
